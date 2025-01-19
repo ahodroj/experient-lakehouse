@@ -1,0 +1,53 @@
+## Data Lakehouse stack with Spark + Iceberg + REST Catalog over JDBC
+
+services:
+  spark-iceberg:
+    image: experient/spark-iceberg
+    container_name: lakehouse
+    build: spark/
+    networks:
+      iceberg_net:
+    depends_on:
+      - rest
+    ports:
+      - 8888:8888
+      - 8080:8080
+      - 10000:10000
+      - 10001:10001
+  rest:
+    image: tabulario/iceberg-rest
+    env_file: catalog.env
+    container_name: iceberg-rest
+    networks:
+      iceberg_net:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 8181:8181
+  
+  postgres:
+    image: 'postgres:11'
+    container_name: postgres
+    hostname: postgres
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: experient
+      POSTGRES_PASSWORD: experient
+      POSTGRES_DB: data_catalog
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "data_catalog"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    volumes:
+      - ${PGDATA_DIR}:/var/lib/postgresql/data
+    networks:
+      - iceberg_net
+
+networks:
+  iceberg_net:

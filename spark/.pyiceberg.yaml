@@ -1,0 +1,7 @@
+
+catalog:
+    default:
+        uri: http://rest:8181
+        s3.endpoint: http://host.docker.internal:9000
+        s3.access-key-id: 2oIOkxJzYJs2agEAJ3RC
+        s3.secret-access-key: RD8ORrwnj9ukiJYi9A3L2fUNLid7mN7Al3xAB2mc
