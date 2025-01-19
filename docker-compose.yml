@@ -2,7 +2,7 @@
 
 services:
   spark-iceberg:
-    image: experient/spark-iceberg
+    image: experient/lakehouse
     container_name: lakehouse
     build: spark/
     networks:
